@@ -1,6 +1,6 @@
-# [掘金沸点客户端](https://juejin.im/pins/recommended)
+# [掘金沸点](https://juejin.im/pins/recommended)客户端
 
-掘金沸点 Mac/Windows 客户端。(非官方) `每次五分钟，摸鱼好轻松`
+掘金沸点 Mac/Windows 客户端。(非官方) `每次五分钟，摸鱼好轻松` [点我下载](https://github.com/kingideayou/FeidianElectron/releases)
 
 ## 功能
 
@@ -13,7 +13,7 @@
 
 第一次运行可能需要在「系统偏好设置」→「安全性与隐私」中点击允许。
 
-<img width="800" alt="screenshot" src="http://ww1.sinaimg.cn/large/6db4aff6ly1g47rfx3h4ej20ea0lw7a1.jpg">
+<img width="520" alt="screenshot" src="http://ww1.sinaimg.cn/large/6db4aff6ly1g47rfx3h4ej20ea0lw7a1.jpg">
 
 
 ## 键盘快捷键

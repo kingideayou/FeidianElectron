@@ -1,14 +1,14 @@
 {
-  "name": "Heartbeat",
-  "version": "2.1.0",
-  "description": "（非官方）知乎想法桌面客户端",
+  "name": "JuejinFeidian",
+  "version": "1.0.0",
+  "description": "掘金沸点桌面客户端（非官方）",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder"
   },
   "repository": "https://github.com/apm1467/zhihu-heartbeat",
-  "author": "Yi Ge",
+  "author": "NeXT",
   "license": "MIT",
   "devDependencies": {
     "electron": "^4.0.0",
@@ -22,7 +22,7 @@
     "request-promise-native": "^1.0.7"
   },
   "build": {
-    "appId": "ch.yige.zhihu-heartbeat",
+    "appId": "me.next.juejin-feidain",
     "mac": {
       "category": "public.app-category.social-networking",
       "target": "zip"

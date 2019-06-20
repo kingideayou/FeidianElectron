@@ -131,7 +131,6 @@ module.exports = class Feed {
 
         this.endCursor = pageInfo['endCursor']
 
-        $('.feed').append(JSON.stringify(pageInfo['endCursor']));
         this._append_to_feed(nodeList);
     }
 

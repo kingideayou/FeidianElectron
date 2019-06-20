@@ -106,7 +106,7 @@ app.once('ready', function() {
 
     if (process.platform === 'darwin') {
         template.unshift({
-            label: 'Heartbeat',
+            label: 'JuejinFeidian',
             submenu: [
                 { role: 'about' },
                 { type: 'separator' },
