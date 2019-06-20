@@ -15,7 +15,7 @@ exports.PIN_TOKEN_URL = BASE_URL + '/pins/token';
 
 exports.COMMENT_URL = BASE_URL + '/comments';
 
-const BASE_WEB_URL = 'https://www.zhihu.com';
+const BASE_WEB_URL = 'https://www.juejin.im';
 exports.BASE_WEB_URL = BASE_WEB_URL;
 
 exports.PIN_WEB_URL = 'https://juejin.im/pin';
@@ -25,7 +25,7 @@ exports.PROFILE_URL = PROFILE_URL;
 
 exports.SELF_PROFILE_URL = PROFILE_URL + '/self';
 
-exports.PROFILE_WEB_URL = BASE_WEB_URL + '/people'
+exports.PROFILE_WEB_URL = BASE_WEB_URL + '/user'
 
 exports.APP_SECRET = 'ecbefbf6b17e47ecb9035107866380';
 

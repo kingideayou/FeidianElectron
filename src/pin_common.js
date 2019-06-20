@@ -126,23 +126,7 @@ const current_window = electron.remote.getCurrentWindow();
         a.addClass('active').delay(500)
                             .queue(() => a.removeClass('active').dequeue());
 
-        if (
-            a.hasClass('comment_img') ||
-            a.hasClass('comment_sticker') ||
-            a.hasClass('comment_gif')
-        )
-            image.open_img_viewer([url], 0);
-        else if (
-            a.hasClass('member_mention') ||
-            url.startsWith(constants.PROFILE_WEB_URL) &&
-            a.parents('.profile').length === 0
-        ) {
-            let s = url.split('/');
-            let uid = s[s.length - 1];
-            profile.open_profile(uid);
-        }
-        else
-            shell.openExternal(url, {activate: false});
+        shell.openExternal(url, {activate: false});
     });
 }
 
@@ -256,7 +240,8 @@ const current_window = electron.remote.getCurrentWindow();
             !$(event.target).is('a, a span, .img, .thumbnail') &&
             !pin.hasClass('loading')
         ) {
-            window.open(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
+            // window.open(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
+            shell.openExternal(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
         }
     });
 }
@@ -283,19 +268,19 @@ const current_window = electron.remote.getCurrentWindow();
         let pin = $(this);
         let template = [
             {
-                label: '浏览器打开',
-                click: () => shell.openExternal(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
+                label: '复制沸点链接',
+                click: () => clipboard.writeText(
+                    constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
             },
             { type: 'separator' },
             {
-                label: '查看详情',
+                label: '内置浏览器打开',
                 click: () => window.open(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
             },
             { type: 'separator' },
             {
-                label: '复制沸点链接',
-                click: () => clipboard.writeText(
-                    constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
+                label: '系统浏览器打开',
+                click: () => shell.openExternal(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
             }
         ];
         if (pin.outerHeight() > 350 && !pin.hasClass('origin-pin'))
@@ -333,7 +318,8 @@ const current_window = electron.remote.getCurrentWindow();
     $(document).on('dblclick', '.feed .pin', function(event) {
         if ($(event.target).is('a, a span, .img, .thumbnail'))
             return;
-        window.open(constants.PIN_WEB_URL + '/' + $(this).attr('data-id'))
+        shell.openExternal(constants.PIN_WEB_URL + '/' + $(this).attr('data-id'))
+        // window.open(constants.PIN_WEB_URL + '/' + $(this).attr('data-id'))
         // CommentsPage.open_comments_page($(this));
     });
 
@@ -362,7 +348,8 @@ const current_window = electron.remote.getCurrentWindow();
                 event.preventDefault();
                 if (has_focus)
                     pin_focused.click(); // uncollapse & add focus
-                    window.open(constants.PIN_WEB_URL + '/' + pin_focused.attr('data-id'))
+                    shell.openExternal(constants.PIN_WEB_URL + '/' + pin_focused.attr('data-id'))
+                    // window.open(constants.PIN_WEB_URL + '/' + pin_focused.attr('data-id'))
                 break;
             case 'm':
                 let pin_id = pin_focused.attr('data-id');
@@ -385,10 +372,10 @@ const current_window = electron.remote.getCurrentWindow();
                 if (has_focus)
                     pin_focused.find('.num-likes').click();
                 break;
-            case 'u':
-                if (has_focus)
-                    pin_focused.find('.author .avatar').click();
-                break;
+            // case 'u':
+                // if (has_focus)
+                    // pin_focused.find('.author .avatar').click();
+                // break;
             case 'k':
             case 'ArrowUp':
                 if (has_focus && is_in_viewport(pin_focused)) {

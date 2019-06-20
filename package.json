@@ -1,6 +1,6 @@
 {
   "name": "JuejinFeidian",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "掘金沸点桌面客户端（非官方）",
   "main": "src/main.js",
   "scripts": {
