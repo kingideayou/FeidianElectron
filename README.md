@@ -1,40 +1,29 @@
-# Zhihu Heartbeat
+# [掘金沸点客户端](https://juejin.im/pins/recommended)
 
-（非官方）知乎想法 Mac/Windows 客户端，用以在电脑上使用知乎想法。点击[这里](https://github.com/apm1467/zhihu-heartbeat/releases/latest)下载。
+掘金沸点 Mac/Windows 客户端。(非官方) `每次五分钟，摸鱼好轻松`
 
 ## 功能
 
 本软件可以：
 
 - 提供流畅的阅读体验
-- 自动获取时间线更新
-- 发布或删除想法
 - 打开高清图片和视频
-- 查看想法评论
-- 表达作者对桌面操作系统的[喜爱](https://overcast.fm/+CdRRhGxw/1:30:56)
 
-## macOS
+## 效果预览
 
 第一次运行可能需要在「系统偏好设置」→「安全性与隐私」中点击允许。
 
-<img width="800" alt="screenshot" src="https://user-images.githubusercontent.com/10210967/55666973-73846900-5856-11e9-9121-b062e28cc1b4.png">
+<img width="800" alt="screenshot" src="http://ww1.sinaimg.cn/large/6db4aff6ly1g47rfx3h4ej20ea0lw7a1.jpg">
 
-
-## Windows
-
-<img width="450" alt="screenshot" src="https://user-images.githubusercontent.com/10210967/55829427-eae42200-5b0e-11e9-8030-0a4fd85c9d99.png">
 
 ## 键盘快捷键
 
-- `j`/`↓` 去下一条想法
-- `k`/`↑` 去上一条想法
+- `j`/`↓` 去下一条沸点
+- `k`/`↑` 去上一条沸点
 - `g` 去时间线顶部（再按一次返回原位置）
-- `m` 折叠想法
-- `s` 给想法点赞
-- `i` 查看想法图片
-- `u` 查看想法作者
-- `space`/`enter` 查看想法评论
-- `o` 查看被转发想法
+- `m` 折叠沸点
+- `i` 查看图片
+- `space`/`enter` 查看沸点详情
 - `esc` 关闭图片或评论窗口
 - `h`/`←` 前一张图片
 - `l`/`→` 后一张图片
@@ -43,16 +32,10 @@
 
 本软件使用 [Electron](https://electronjs.org) 框架，在 macOS 与 Windows 系统上均可构建。
 
-1. 安装 [`yarn`](https://yarnpkg.com/lang/en/docs/install/) 
-2. `$ cd zhihu-heartbeat/`
+1. 安装 [`yarn`](https://yarnpkg.com/lang/en/docs/install/)
+2. `$ cd FeidianElectron/`
 3. `$ yarn install`
 4. 使用 `$ yarn start` 直接启动程序，或 `$ yarn dist --mac --win` 生成对应两个系统的可执行程序
 
 ## 致谢
-
-- OAuth 登录部分参照了开源项目 [Zhihu-OAuth](https://github.com/7sDream/zhihu-oauth) 的[方法](http://zhihu-oauth.readthedocs.io/zh_CN/latest/for-dev/oauth/game.html)
-- 软件图标和界面均使用了 [Font Awesome](https://fontawesome.com) 的免费图标字体
-- 视频播放部分使用了 [hls.js](https://github.com/video-dev/hls.js/) 开源库
-- 使用了 [pangu.js](https://github.com/vinta/pangu.js) 在中西文字符之间自动插入空格
-- 界面灵感来自 [Tweetbot](https://tapbots.com/tweetbot/mac/) 和 [Reeder 4](https://beta.reeder.ch)
-- 感谢知乎
+- 此项目基于[zhihu-heartbeat](https://github.com/apm1467/zhihu-heartbeat) 修改而来
