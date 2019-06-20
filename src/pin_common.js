@@ -36,7 +36,7 @@ const current_window = electron.remote.getCurrentWindow();
 // ------------------------------------------------------------
 
 // include extra CSS to adjust app scrollbar on Windows
-{    
+{
     if (process.platform === 'win32')
         current_window.webContents.insertCSS(constants.WINDOWS_EXTRA_CSS);
 }
@@ -95,7 +95,7 @@ const current_window = electron.remote.getCurrentWindow();
 // ------------------------------------------------------------
 
 // click heart button to like pin
-{        
+{
     ipc.on('parent-win-id', function(event, parent_id) {
         $(document).on('click', '.pin .num-likes', async function(event) {
             let clicked_btn = $(this);
@@ -256,7 +256,7 @@ const current_window = electron.remote.getCurrentWindow();
             !$(event.target).is('a, a span, .img, .thumbnail') &&
             !pin.hasClass('loading')
         ) {
-            CommentsPage.open_comments_page(pin);
+            window.open(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
         }
     });
 }
@@ -283,13 +283,17 @@ const current_window = electron.remote.getCurrentWindow();
         let pin = $(this);
         let template = [
             {
-                label: '详情',
-                click: () => CommentsPage.open_comments_page(
-                    $(this).closest('.origin-pin, .pin'))
+                label: '浏览器打开',
+                click: () => shell.openExternal(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
             },
             { type: 'separator' },
             {
-                label: '复制想法链接',
+                label: '查看详情',
+                click: () => window.open(constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
+            },
+            { type: 'separator' },
+            {
+                label: '复制沸点链接',
                 click: () => clipboard.writeText(
                     constants.PIN_WEB_URL + '/' + pin.attr('data-id'))
             }
@@ -329,7 +333,8 @@ const current_window = electron.remote.getCurrentWindow();
     $(document).on('dblclick', '.feed .pin', function(event) {
         if ($(event.target).is('a, a span, .img, .thumbnail'))
             return;
-        CommentsPage.open_comments_page($(this));
+        window.open(constants.PIN_WEB_URL + '/' + $(this).attr('data-id'))
+        // CommentsPage.open_comments_page($(this));
     });
 
     // prevent text selection after double click
@@ -357,7 +362,7 @@ const current_window = electron.remote.getCurrentWindow();
                 event.preventDefault();
                 if (has_focus)
                     pin_focused.click(); // uncollapse & add focus
-                    CommentsPage.open_comments_page(pin_focused);
+                    window.open(constants.PIN_WEB_URL + '/' + pin_focused.attr('data-id'))
                 break;
             case 'm':
                 let pin_id = pin_focused.attr('data-id');
@@ -446,7 +451,7 @@ const current_window = electron.remote.getCurrentWindow();
 
 
 // scroll to top if currently not at top;
-// otherwise scroll back to the last scroll position 
+// otherwise scroll back to the last scroll position
 function scroll_to_top() {
     let container = $('.container');
     let scroll_position = container.scrollTop();
@@ -457,7 +462,7 @@ function scroll_to_top() {
     else {
         let last_scroll_position = parseInt(
             localStorage.getItem('last_scroll_position'));
-        if (last_scroll_position) 
+        if (last_scroll_position)
             container.animate(
                 {scrollTop: last_scroll_position}, 300, 'easieEaseInOut');
     }

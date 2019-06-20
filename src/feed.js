@@ -24,55 +24,60 @@ module.exports = class Feed {
         this.local_latest_pin_time = 0;
         this.server_latest_pin_time = 0;
         this.local_oldest_pin_id = '';
+
+        this.endCursor = '';
     }
 
     async start() {
         this._display_avatar();
         await this._fetch_initial_feed();
         this._enable_scroll_event();
-        setInterval(
-            () => this._check_update(), 
-            constants.FEED_UPDATE_INTERVAL
-        );
     }
 
     async _display_avatar() {
-        let res = await request({
-            method: 'GET',
-            url: this.profile_url,
-            headers: auth.get_authorized_request_header(),
-            json: true,
-            simple: false,
-            jar: true
-        });
-        if ("error" in res) {
-            this._display_avatar();
-            return;
-        }
-        let avatar = res['avatar_url'].replace('_s', ''); // get large image
-        $('.self-avatar').attr('src', avatar);
+        $('.self-avatar').attr('src', 'https://b-gold-cdn.xitu.io/v3/static/img/simplify-logo.3e3c253.svg');
     }
 
     async _fetch_initial_feed() {
         let res = await request({
-            method: 'GET',
-            url: this.fetch_url + '?reverse_order=0',
-            headers: auth.get_authorized_request_header(),
+            method: 'POST',
+            url: 'https://web-api.juejin.im/query',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Agent': 'Juejin/Web',
+            },
+            body: {
+                'extensions': {
+                    'query': {
+                        'id': '249431a8e4d85e459f6c29eb808e76d0'
+                    }
+                },
+                'variables': {'size': 20, 'after': ''}
+            },
             jar: true,
             simple: false,
             json: true
         });
+
+        let jsonData = res['data']['recommendedActivityFeed']['items']
+        let nodeList = jsonData['edges']
+        let pageInfo = jsonData['pageInfo']
+
+        // $('.feed').append(JSON.stringify(nodeList));
+
         if (handle_err(res))
             return;
-        let pins_data = res['data'].filter((el) => el['type'] === 'moment');
+        // let pins_data = res['data'].filter((el) => el['type'] === 'moment');
 
         // get latest pin id & time
-        let pin = new Pin(pins_data[0]);
-        this.local_latest_pin_id = pin.id;
-        this.local_latest_pin_time = pin.time;
-
-        this._report_latest_viewed_pin_id();
-        this._append_to_feed(pins_data);
+        // let pin = new Pin(pins_data[0]);
+        // this.local_latest_pin_id = pin.id;
+        // this.local_latest_pin_time = pin.time;
+        //
+        // this._report_latest_viewed_pin_id();
+        // this._append_to_feed(pins_data);
+        this.endCursor = pageInfo['endCursor']
+        this._append_to_feed(nodeList);
     }
 
     _enable_scroll_event() {
@@ -80,6 +85,7 @@ module.exports = class Feed {
         let self = this;
         container.scroll(async function() {
             let page_length = container[0].scrollHeight;
+
             let scroll_position = container.scrollTop();
 
             // scroll down to fetch older feed
@@ -89,27 +95,44 @@ module.exports = class Feed {
                 await self._fetch_older_feed();
                 self._enable_scroll_event();
             }
-
-            // remove update notification when scroll to top
-            else if (scroll_position <= 5)
-                $('#update-notification').removeClass('notification-show');
         });
     }
 
     async _fetch_older_feed() {
         let res = await request({
-            method: 'GET',
-            url: this.fetch_url + '?after_id=' + this.local_oldest_pin_id +
-                 '&offset=' + this.feed_offset,
-            headers: auth.get_authorized_request_header(),
+            method: 'POST',
+            url: 'https://web-api.juejin.im/query',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Agent': 'Juejin/Web',
+            },
+            body: {
+                'extensions': {
+                    'query': {
+                        'id': '249431a8e4d85e459f6c29eb808e76d0'
+                    }
+                },
+                'variables': {
+                    'size': 20,
+                    'after': this.endCursor
+                },
+            },
             jar: true,
             simple: false,
             json: true
         });
+
         if (handle_err(res))
             return;
-        let pins_data = res['data'].filter((el) => el['type'] === 'moment');
-        this._append_to_feed(pins_data);
+
+        let jsonData = res['data']['recommendedActivityFeed']['items'];
+        let nodeList = jsonData['edges'];
+        let pageInfo = jsonData['pageInfo'];
+
+        this.endCursor = pageInfo['endCursor']
+
+        $('.feed').append(JSON.stringify(pageInfo['endCursor']));
+        this._append_to_feed(nodeList);
     }
 
     async _check_update() {
@@ -145,7 +168,7 @@ module.exports = class Feed {
         let stop_fetching = false;
         let res = await request({
             method: 'GET',
-            url: this.fetch_url + 
+            url: this.fetch_url +
                  '?after_id=' + fetch_after_id + '&offset=' + fetch_offset,
             headers: auth.get_authorized_request_header(),
             jar: true,
@@ -179,12 +202,12 @@ module.exports = class Feed {
             $('.feed').prepend(output);
 
             // give update 2 seconds to load
-            setTimeout( 
+            setTimeout(
                 () => {
                     let update = $('#update');
                     let container = $('.container');
                     let scroll_top = container.scrollTop();
-    
+
                     update.removeClass('hidden');
 
                     // add spaces between CJK and half-width characters
@@ -195,10 +218,10 @@ module.exports = class Feed {
 
                     // remove outer .update div
                     update.children().unwrap();
-    
+
                     // display feed update notification
                     $('#update-notification').addClass('notification-show');
-                }, 
+                },
                 2000
             );
         }
@@ -226,9 +249,6 @@ module.exports = class Feed {
 
         // add spaces between CJK and half-width characters
         pangu.spacingElementByClassName('text');
-
-        this.local_oldest_pin_id = pins_data[pins_data.length - 1]['target']['id'];
-        this.feed_offset += 10;
     }
 }
 
@@ -236,6 +256,7 @@ module.exports = class Feed {
 function generate_pin_html(pin_data) {
     let output = '';
     let pin = new Pin(pin_data);
+
     output += '<div class="pin" data-id="' + pin.id + '">';
     output += pin.get_html();
     output += '</div>'; // pin

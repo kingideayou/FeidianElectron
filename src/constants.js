@@ -18,9 +18,9 @@ exports.COMMENT_URL = BASE_URL + '/comments';
 const BASE_WEB_URL = 'https://www.zhihu.com';
 exports.BASE_WEB_URL = BASE_WEB_URL;
 
-exports.PIN_WEB_URL = BASE_WEB_URL + '/pin';
+exports.PIN_WEB_URL = 'https://juejin.im/pin';
 
-const PROFILE_URL = BASE_URL + '/people';
+const PROFILE_URL = 'https://juejin.im/user';
 exports.PROFILE_URL = PROFILE_URL;
 
 exports.SELF_PROFILE_URL = PROFILE_URL + '/self';
@@ -101,7 +101,7 @@ exports.FEED_UPDATE_INTERVAL = 20000; // 20 sec
 
 exports.PIN_STATISTICS_UPDATE_INTERVAL = 600000; // 10 min
 
-const GITHUB_REPO_URL = 'https://github.com/apm1467/zhihu-heartbeat';
+const GITHUB_REPO_URL = 'https://github.com/kingideayou/FeidianElectron';
 exports.GITHUB_REPO_URL = GITHUB_REPO_URL;
 
 exports.GITHUB_ISSUES_URL = GITHUB_REPO_URL + '/issues';
@@ -117,7 +117,7 @@ exports.BLANK_THUMBNAIL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAB
 exports.WINDOWS_EXTRA_CSS = `
     ::-webkit-scrollbar {
         width: 9px;
-    } 
+    }
     ::-webkit-scrollbar:hover {
         background-color: #A1A09F;
     }

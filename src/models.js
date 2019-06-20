@@ -6,14 +6,14 @@ const constants = require('./constants');
 class User {
     constructor(user_data) {
         this.id = user_data['id'];
-        this.name = user_data['name'];
-        this.bio = user_data['headline'];
-        this.followers = user_data['follower_count'];
-        this.following = user_data['following_count'];
-        this.follows_me = user_data['is_followed'];
-        this.followed_by_me = user_data['is_following'];
-        this.num_pins = user_data['pins_count'];
-        this.avatar = user_data['avatar_url'].replace('_s', '_l');
+        this.name = user_data['username'];
+        this.bio = user_data['company'];
+        // this.followers = user_data['follower_count'];
+        // this.following = user_data['following_count'];
+        // this.follows_me = user_data['is_followed'];
+        // this.followed_by_me = user_data['is_following'];
+        // this.num_pins = user_data['pins_count'];
+        this.avatar = user_data['avatarLarge'].replace('_s', '_l');
         this.url = `${constants.PROFILE_WEB_URL}/${this.id}`;
     }
 
@@ -75,38 +75,38 @@ class User {
         $('.title').text(user.name);
         $('.profile > .author').html(user.get_html());
         $('.profile > .content').text(user.bio);
-        $('.followers .num').text(user.followers);
-        $('.following .num').text(user.following);
-        $('.num-pins .num').text(user.num_pins);
+        // $('.followers .num').text(user.followers);
+        // $('.following .num').text(user.following);
+        // $('.num-pins .num').text(user.num_pins);
 
-        if (user.follows_me) {
-            $('.follows-me').removeClass('hidden');
-            $('.profile > .content').css({'margin-right': '135px'});
-        }
-        else {
-            $('.follows-me').addClass('hidden');
-            $('.profile > .content').css({'margin-right': '60px'});
-        }
+        // if (user.follows_me) {
+        //     $('.follows-me').removeClass('hidden');
+        //     $('.profile > .content').css({'margin-right': '135px'});
+        // }
+        // else {
+        //     $('.follows-me').addClass('hidden');
+        //     $('.profile > .content').css({'margin-right': '60px'});
+        // }
 
-        let btn = $('.follow-btn');
-        if (user.followed_by_me) {
-            btn.text('已关注');
-            btn.addClass('followed-by-me');
-        }
-        else {
-            btn.text('关注');
-            btn.removeClass('followed-by-me');
-        }
+        // let btn = $('.follow-btn');
+        // if (user.followed_by_me) {
+        //     btn.text('已关注');
+        //     btn.addClass('followed-by-me');
+        // }
+        // else {
+        //     btn.text('关注');
+        //     btn.removeClass('followed-by-me');
+        // }
 
-        btn.unbind('click');
-        btn.click(async function(event) {
-            btn.fadeTo(200, 0);
-            if (user.followed_by_me)
-                await User.unfollow(uid);
-            else
-                await User.follow(uid);
-            btn.fadeTo(200, 1);
-        });
+        // btn.unbind('click');
+        // btn.click(async function(event) {
+        //     btn.fadeTo(200, 0);
+        //     if (user.followed_by_me)
+        //         await User.unfollow(uid);
+        //     else
+        //         await User.follow(uid);
+        //     btn.fadeTo(200, 1);
+        // });
     }
 
     static async get_user(uid) {
@@ -125,78 +125,76 @@ class PinAuthor extends User {}
 
 class Pin {
     constructor(pin_data) {
-        let target = pin_data['target'] ? pin_data['target'] : pin_data;
+        let target = pin_data['node']['targets'][0] ? pin_data['node']['targets'][0] : pin_data;
 
         this.id = target['id'];
-        this.author = new PinAuthor(target['author']);
-        this.time = target['updated']; // int
-        this.num_likes = target['reaction_count'];
-        this.is_liked = target['virtuals']['reaction_type'] === 'like';
-        this.num_repins = target['repin_count'];
-        this.num_comments = target['comment_count'];
+        this.author = new PinAuthor(target['user']);
+        this.time = target['updatedAt'];
+        this.num_likes = target['likeCount'];
+        // this.is_liked = target['virtuals']['reaction_type'] === 'like';``
+        this.is_liked = false;
+        // this.num_repins = target['repin_count'];
+        this.num_comments = target['commentCount'];
         this.text = '';
         this.images = [];
         this.video = '';
 
-        this.is_repin = 'origin_pin' in target;
-        if (this.is_repin) {
-            if (target['origin_pin']['is_deleted'])
-                this.origin_pin_deleted_reason = target['origin_pin']['deleted_reason'];
-            else
-                this.origin_pin = new Pin(target['origin_pin']);
-        }
-
         let contents = target['content'];
+        this.images.push(target['pictures']);
+        this.text = contents;
+        let url = target['url']
+        if (url !== null && url !== '') {
+            this.text += `<a class="link" href="${url}">${target['urlTitle']}</a>`;
+        }
 
         // handle text & text repin
-        if (
-            contents[0]['type'] === 'text' ||
-            pin_data['feed_type'] === 'repin' ||
-            pin_data['feed_type'] === 'repin_with_comment'
-        ) {
-            this.text = contents[0]['content']
-                .replace(/<script/ig, '')
-                .replace(/data-repin=["'][^"']*["']/g, 'class="repin_user"') // mark repin
-                .replace(/\sdata-[^=]+=["'][^"']*["']/g, '')
-                .replace(/<\/a>:\s?/g, '</a>：') // use full-width colon
-                .replace(/\s+class=["']member_mention["']/g, '')
-                .replace('<br><a href="zhihu://pin/feedaction/fold/">收起</a>', '');
+        // if (
+        //     contents[0]['type'] === 'text' ||
+        //     pin_data['feed_type'] === 'repin' ||
+        //     pin_data['feed_type'] === 'repin_with_comment'
+        // ) {
+        //     this.text = contents[0]['content']
+        //         .replace(/<script/ig, '')
+        //         .replace(/data-repin=["'][^"']*["']/g, 'class="repin_user"') // mark repin
+        //         .replace(/\sdata-[^=]+=["'][^"']*["']/g, '')
+        //         .replace(/<\/a>:\s?/g, '</a>：') // use full-width colon
+        //         .replace(/\s+class=["']member_mention["']/g, '')
+        //         .replace('<br><a href="zhihu://pin/feedaction/fold/">收起</a>', '');
+        //
+            // const repin_sign = '<i class="fas fa-retweet"></i>';
+            // const img_sign = '<i class="fas fa-image"></i>';
 
-            const repin_sign = '<i class="fas fa-retweet"></i>';
-            const img_sign = '<i class="fas fa-image"></i>';
+            // let links = this.text.match(
+            //     /<a\s+(class=["'][^"']*["']\s+)?href=["'][^"']*["'](\s+class=["'][^"']*["'])?>/g);
+            // links = new Set(links);
+            // $('.feed').append(JSON.stringify(links));
+            // for (const l of links) {
+            //     // add repin sign before account names
+            //     if (l.includes('repin_user'))
+            //         this.text = this.text.split(l).join(repin_sign + l);
+            //
+            //     // add image sign before image links
+            //     if (l.includes('comment_img') || l.includes('comment_sticker'))
+            //         this.text = this.text.split(l).join(img_sign + l);
+            // }
+        // }
 
-            let links = this.text.match(
-                /<a\s+(class=["'][^"']*["']\s+)?href=["'][^"']*["'](\s+class=["'][^"']*["'])?>/g);
-            links = new Set(links);
-            for (const l of links) {
-                // add repin sign before account names
-                if (l.includes('repin_user'))
-                    this.text = this.text.split(l).join(repin_sign + l);
+    }
 
-                // add image sign before image links
-                if (l.includes('comment_img') || l.includes('comment_sticker'))
-                    this.text = this.text.split(l).join(img_sign + l);
-            }
-        }
+    Linkify(inputText) {
+        //URLs starting with http://, https://, or ftp://
+        var replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+        var replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
 
-        // handle media
-        for (const content of contents) {
-            if (content['type'] === 'link')
-                this.text +=
-                    `<div class="link-title">${content['title']}</div>
-                     <a class="link" href="${content['url']}">${content['url']}</a>`;
+        //URLs starting with www. (without // before it, or it'd re-link the ones done above)
+        var replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+        var replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
 
-            if (content['type'] === 'image')
-                this.images.push(content['url']);
+        //Change email addresses to mailto:: links
+        var replacePattern3 = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
+        var replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
 
-            if (content['type'] === 'video') {
-                this.video_thumbnail = content['thumbnail'];
-                let video = content['playlist'].find(el => el['quality'] === 'hd');
-                this.video = video['url'];
-                this.video_height = video['height'];
-                this.video_width = video['width'];
-            }
-        }
+        return replacedText
     }
 
     get_statistics_html() {
@@ -207,8 +205,6 @@ class Pin {
         }
         output += `<span class="num-comments">
                    <i class="far fa-comment"></i>${this.num_comments}</span>`;
-        output += `<span class="num-repins">
-                   <i class="fas fa-retweet"></i>${this.num_repins}</span>`;
         // show solid heart if the pin is liked by the user; otherwise show regular heart
         output += `<span class="num-likes">
                    <i class="${this.is_liked ? 'fas' : 'far'} fa-heart"></i>${this.num_likes}
@@ -255,9 +251,9 @@ class Pin {
     _get_video_html() {
         if (this.video === '')
             return '';
-        return `<div class="video" data-url="${this.video}" 
+        return `<div class="video" data-url="${this.video}"
                 data-width="${this.video_width}" data-height="${this.video_height}">
-                <img class="thumbnail" 
+                <img class="thumbnail"
                 src="${this.video_thumbnail ? this.video_thumbnail : constants.BLANK_THUMBNAIL}">
                 <div class="far fa-play-circle"></div>
                 </div>`;

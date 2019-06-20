@@ -30,11 +30,12 @@ const current_window = remote.getCurrentWindow();
     }
 
     let feed = new Feed();
-    let access_expire = localStorage.getItem('access_expire_time');
-    if (access_expire < Date.now())
-        log_in();
-    else
-        feed.start();
+    // let access_expire = localStorage.getItem('access_expire_time');
+    // if (access_expire < Date.now())
+    //     log_in();
+    // else
+        // feed.start();
+    feed.start();
 
     function log_in() {
         $('.logo').addClass('hidden');
@@ -55,40 +56,40 @@ const current_window = remote.getCurrentWindow();
 // ------------------------------------------------------------
 
 // check app update
-{
-    request(constants.GITHUB_CHECK_UPDATE_URL, function(error, response, body) {
-        if (!body)
-            return;
-        let latest_version = body;
-        let current_version = app.getVersion();
-        if (current_version !== latest_version) {
-            let options = {
-                title: '检查更新',
-                buttons: ['去下载', '取消'],
-                defaultId: 0,
-                cancelId: 1,
-                message: '当前版本 ' + current_version + '，' + 
-                         '最新版本 ' + latest_version + '，要去下载吗？'
-            };
-            dialog.showMessageBox(current_window, options, function(response) {
-                if (response === 0)
-                    shell.openExternal(constants.GITHUB_DOWNLOAD_URL);
-            });
-        }
-    });
-}
+// {
+//     request(constants.GITHUB_CHECK_UPDATE_URL, function(error, response, body) {
+//         if (!body)
+//             return;
+//         let latest_version = body;
+//         let current_version = app.getVersion();
+//         if (current_version !== latest_version) {
+//             let options = {
+//                 title: '检查更新',
+//                 buttons: ['去下载', '取消'],
+//                 defaultId: 0,
+//                 cancelId: 1,
+//                 message: '当前版本 ' + current_version + '，' +
+//                          '最新版本 ' + latest_version + '，要去下载吗？'
+//             };
+//             dialog.showMessageBox(current_window, options, function(response) {
+//                 if (response === 0)
+//                     shell.openExternal(constants.GITHUB_DOWNLOAD_URL);
+//             });
+//         }
+//     });
+// }
 
 // ------------------------------------------------------------
 
 // click title bar logo to publish new pin
-{
-    $(document).on('click', '.logo', function(event) {
-        let logo = $(this);
-        logo.addClass('active')
-            .delay(400).queue(() => logo.removeClass('active').dequeue());
-        pin_publish.open_editor();
-    });
-}
+// {
+    // $(document).on('click', '.logo', function(event) {
+        // let logo = $(this);
+        // logo.addClass('active')
+        //     .delay(400).queue(() => logo.removeClass('active').dequeue());
+        // pin_publish.open_editor();
+    // });
+// }
 
 
 // ------------------------------------------------------------
@@ -137,14 +138,14 @@ const current_window = remote.getCurrentWindow();
             label: '意见反馈',
             click: () => shell.openExternal(constants.GITHUB_ISSUES_URL)
         },
-        { type: 'separator' },
-        {
-            label: '登出知乎',
-            click: () => {
-                localStorage.clear();
-                current_window.reload();
-            }
-        }
+        // { type: 'separator' },
+        // {
+        //     label: '登出知乎',
+        //     click: () => {
+        //         localStorage.clear();
+        //         current_window.reload();
+        //     }
+        // }
     ]);
     $(document).on('click contextmenu', '.self-avatar', function(event) {
         event.preventDefault();
