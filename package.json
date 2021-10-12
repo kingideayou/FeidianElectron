@@ -11,7 +11,7 @@
   "author": "NeXT",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^4.0.0",
+    "electron": "^11.5.0",
     "electron-builder": "^20.18.0",
     "electron-reloader": "^0.2.0"
   },
